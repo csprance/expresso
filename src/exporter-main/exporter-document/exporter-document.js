@@ -428,6 +428,7 @@ export default CorePhotoshopDocument.extend({
 
     return {
       enableTGACompression: settings.get("enableTGACompression"),
+      enableTIFFCompression: settings.get("enableTIFFCompression"),
     };
   },
 });

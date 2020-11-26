@@ -15,6 +15,7 @@ export default Ractive.extend({
 
     generalSettingsVisible: true,
     tgaSettingsVisible: true,
+    tiffSettingsVisible: true,
   },
 
   observer: null,

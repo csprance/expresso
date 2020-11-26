@@ -7,7 +7,7 @@ It provides a set of utility panels that integrates directly into Photoshop to e
 A compiled version of the plugin is [available for download](http://minifloppy.it/portfolio/expresso/). See what's new in the [changelog](http://github.com/fcamarlinghi/expresso/blob/master/changelog.md). Please note that only the **Exporter** panel is currently available in the repository.
 
 ### Building From Source
-You will need a recent version of NodeJS and NPM on Windows or Mac to build the plugin.
+You will need a recent version of Java, NodeJS and NPM on Windows or Mac to build the plugin.
 
 1. First [fork and/or clone](https://guides.github.com/activities/forking/) the repository.
 2. Install NPM dependencies using the `npm install` command.
@@ -26,6 +26,8 @@ module.exports = {
 To create a redistributable *ZXP* archive which can be installed in Photoshop, use the `npm run exporter:release` command. The archive will be generated in the `<project_root>/release` folder.
 
 ### Debugging
+> For beginners check out https://github.com/Adobe-CEP/Getting-Started-guides first and then return here
+ 
 The simplest way to debug the plugin in Photoshop is to create a symbolic link between the `<project_root>/build/com.expresso.exporter` folder and the local Adobe CEP `extensions` folder on your system. This way you'll be able to simply close and reopen the extension in Photoshop to make it pick-up the changes you did to the code (without having to restart the application).
 
 To create symbolic links on Windows you can use the [Link Shell Extensions](http://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html) tools. On Mac you can use the `ln -s` command:
@@ -37,6 +39,11 @@ ls -s /path/to/build/exporter /path/to/CEP/extensions/com.expresso.exporter
 If you're using Visual Studio Code as your IDE you can attach it directly to the Chrome Embeded Framework process by using one of the provided launch profiles.
 
 The extension can also be debugged just like any other Photoshop extension using the Chrome Developer Tools. Please check out the [Adobe CEP Resources](http://adobe-cep.github.io/CEP-Resources/) page for additional information.
+
+##### Debugging on Chrome 80+
+Navigate to `chrome://inspect/#devices`, ensure 'Discover network targets' is checked, and click 'Configure'. Add your debug port as `localhost:8000` and click 'Done'.
+
+Your CEF session should appear in the list of Targets after a few seconds. Click `inspect`, and you're back up and debugging.
 
 ## Contributing
 Contributions are extremely welcome! Feel free to file issues or open pull requests.

@@ -623,7 +623,9 @@ export default class ImageExporter {
       case FORMATS.TIFF:
         // FIXME: remove premultiplied alpha
         args.push('-define', 'tiff:alpha=unassociated');
-        args.push('-compress', 'LZW');
+        if (options && options.enableTIFFCompression) {
+          args.push('-compress', 'LZW');
+        }
         args.push('tiff:-');
         break;
 
@@ -642,6 +644,7 @@ export default class ImageExporter {
    */
   _convertToFile(args, output) {
     return new Promise((resolve, reject) => {
+      // We want .tiff files as .tif here so we replace the extension here could probably be handled better elsewhere
       const filePath =
         output.target.format === FORMATS.TIFF
           ? replaceExt(output.target.path, '.tif')
