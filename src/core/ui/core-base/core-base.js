@@ -1,30 +1,25 @@
-﻿
-import Ractive from 'ractive';
+﻿import Ractive from "ractive";
 
 export default Ractive.extend({
-        
-    lazy: true,
+  lazy: true,
 
-    twoway: false,
+  twoway: false,
 
-    isolated: true,
+  isolated: true,
 
-    data: {
+  data: {
+    /**
+     * Class names.
+     * @type String
+     * @default null
+     */
+    css: null,
 
-        /**
-         * Class names.
-         * @type String
-         * @default null
-         */
-        css: null,
-
-        /**
-         * Component instance style.
-         * @type String
-         * @default null
-         */
-        style: null,
-
-    },
-
+    /**
+     * Component instance style.
+     * @type String
+     * @default null
+     */
+    style: null,
+  },
 });

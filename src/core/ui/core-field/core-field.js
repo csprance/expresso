@@ -1,82 +1,69 @@
-﻿
-import CoreBase from '../core-base/core-base.js';
-import './core-field.less';
+﻿import CoreBase from "../core-base/core-base.js";
+import "./core-field.less";
 
 export default CoreBase.extend({
+  data: {
+    /**
+     * Tooltip for this field.
+     * @type String
+     * @default null
+     */
+    tooltip: null,
 
-    data: {
+    /**
+     * Field name.
+     * @type String
+     * @default null
+     */
+    name: null,
 
-        /**
-         * Tooltip for this field.
-         * @type String
-         * @default null
-         */
-        tooltip: null,
+    /**
+     * If true, this field cannot be focused and the user cannot change
+     * its value.
+     * @type Boolean
+     * @default false
+     */
+    disabled: false,
 
-        /**
-         * Field name.
-         * @type String
-         * @default null
-         */
-        name: null,
+    /**
+     * Tabindex of this field.
+     * @type String
+     * @default null
+     */
+    tabindex: null,
+  },
 
-        /**
-         * If true, this field cannot be focused and the user cannot change
-         * its value.
-         * @type Boolean
-         * @default false
-         */
-        disabled: false,
+  oldTabindex: null,
 
-        /**
-         * Tabindex of this field.
-         * @type String
-         * @default null
-         */
-        tabindex: null,
+  field: null,
 
-    },
+  oninit: function () {
+    this._super();
+    this.oldTabindex = this.get("tabindex");
+    this.observe("disabled", this.updateTabIndex);
+  },
 
-    oldTabindex: null,
+  onrender: function () {
+    this._super();
+    this.cacheFieldElement();
+  },
 
-    field: null,
+  onunrender: function () {
+    this.field = null;
+    this._super();
+  },
 
-    oninit: function ()
-    {
-        this._super();
-        this.oldTabindex = this.get('tabindex');
-        this.observe('disabled', this.updateTabIndex);
-    },
+  cacheFieldElement: function () {
+    this.field = this.find("input");
+  },
 
-    onrender: function ()
-    {
-        this._super();
-        this.cacheFieldElement();
-    },
-
-    onunrender: function ()
-    {
-        this.field = null;
-        this._super();
-    },
-
-    cacheFieldElement: function ()
-    {
-        this.field = this.find('input');
-    },
-
-    updateTabIndex: function ()
-    {
-        if (this.get('disabled'))
-        {
-            this.oldTabindex = this.get('tabindex');
-            this.set('tabindex', null);
-        }
-        else
-        {
-            this.set('tabindex', this.oldTabindex);
-            this.oldTabindex = null;
-        }
-    },
-
+  updateTabIndex: function () {
+    if (this.get("disabled")) {
+      this.oldTabindex = this.get("tabindex");
+      this.set("tabindex", null);
+    } else {
+      this.set("tabindex", this.oldTabindex);
+      this.oldTabindex = null;
+    }
+  },
 });

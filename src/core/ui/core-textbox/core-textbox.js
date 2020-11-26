@@ -1,47 +1,39 @@
-﻿
-import CoreField from '../core-field/core-field.js';
-import './core-textbox.less';
+﻿import CoreField from "../core-field/core-field.js";
+import "./core-textbox.less";
 
 export default CoreField.extend({
+  template: require("./core-textbox.html"),
 
-    template: require('./core-textbox.html'),
+  twoway: true,
 
-    twoway: true,
+  data: {
+    /**
+     * Field value.
+     * @type String
+     * @default ''
+     */
+    value: "",
 
-    data: {
+    /**
+     * Placeholder text that hints to the user what can be entered in the input.
+     * @type String
+     * @default null
+     */
+    placeholder: null,
 
-        /**
-         * Field value.
-         * @type String
-         * @default ''
-         */
-        value: '',
+    /**
+     * If true, the user cannot modify the value of the input.
+     * @type Boolean
+     * @default false
+     */
+    readonly: false,
+  },
 
-        /**
-         * Placeholder text that hints to the user what can be entered in the input.
-         * @type String
-         * @default null
-         */
-        placeholder: null,
+  keydownAction: function (event) {
+    if (this.get("disabled") || this.get("readonly")) return;
 
-        /**
-         * If true, the user cannot modify the value of the input.
-         * @type Boolean
-         * @default false
-         */
-        readonly: false,
+    event.stopPropagation();
 
-    },
-
-    keydownAction: function (event)
-    {
-        if (this.get('disabled') || this.get('readonly'))
-            return;
-
-        event.stopPropagation();
-
-        if (event.keyCode === 13)
-            this.field.blur();
-    },
-
+    if (event.keyCode === 13) this.field.blur();
+  },
 });

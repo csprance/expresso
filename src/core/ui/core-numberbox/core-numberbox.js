@@ -1,114 +1,100 @@
-﻿
-import CoreField from '../core-field/core-field.js';
-import './core-numberbox.less';
+﻿import CoreField from "../core-field/core-field.js";
+import "./core-numberbox.less";
 
-export const realms = ['integer', 'real'];
+export const realms = ["integer", "real"];
 
 export default CoreField.extend({
+  template: require("./core-numberbox.html"),
 
-    template: require('./core-numberbox.html'),
+  twoway: true,
 
-    twoway: true,
+  data: {
+    /**
+     * Field value.
+     * @type Number
+     * @default 0
+     */
+    value: 0,
 
-    data: {
+    /**
+     * The number that indicates the minimum value of the range.
+     * @type number
+     * @default 0
+     */
+    min: 0,
 
-        /**
-         * Field value.
-         * @type Number
-         * @default 0
-         */
-        value: 0,
+    /**
+     * The number that indicates the maximum value of the range.
+     * @type number
+     * @default 100
+     */
+    max: 100,
 
-        /**
-         * The number that indicates the minimum value of the range.
-         * @type number
-         * @default 0
-         */
-        min: 0,
+    /**
+     * Specifies the value granularity of the range's value.
+     * @type number
+     * @default 1
+     */
+    step: 1,
 
-        /**
-         * The number that indicates the maximum value of the range.
-         * @type number
-         * @default 100
-         */
-        max: 100,
+    /**
+     * Specifies the value precision, only applies when 'realm' is set to 'real'.
+     * @type number
+     * @default 1
+     */
+    precision: 1,
 
-        /**
-         * Specifies the value granularity of the range's value.
-         * @type number
-         * @default 1
-         */
-        step: 1,
+    /**
+     * Specifies the value realm. Valid values: 'integer', 'real'.
+     * @type string
+     * @default 'integer'
+     */
+    realm: "real",
 
-        /**
-         * Specifies the value precision, only applies when 'realm' is set to 'real'.
-         * @type number
-         * @default 1
-         */
-        precision: 1,
+    /**
+     * If true, the user cannot modify the value of the input.
+     * @type Boolean
+     * @default false
+     */
+    readonly: false,
+  },
 
-        /**
-         * Specifies the value realm. Valid values: 'integer', 'real'.
-         * @type string
-         * @default 'integer'
-         */
-        realm: 'real',
+  oninit: function () {
+    this._super();
+    this.observe("value min max step precision", this.updateValue, {
+      init: false,
+    });
+    this.observe("realm", function (newValue) {
+      if (realms.indexOf(newValue) < 0) {
+        throw new TypeError("Invalid realm: " + newValue);
+      }
 
-        /**
-         * If true, the user cannot modify the value of the input.
-         * @type Boolean
-         * @default false
-         */
-        readonly: false,
+      // Convert current value to new type
+      this.updateValue(this.get("value"), this.get("value"), "value");
+    });
+  },
 
-    },
+  updateValue: function (value, old, keypath) {
+    if (value !== undefined && value !== null) {
+      if (this.get("realm") === "integer") {
+        value = value | 0;
+      } else {
+        value = +value.toFixed(this.get("precision"));
+      }
 
-    oninit: function ()
-    {
-        this._super();
-        this.observe('value min max step precision', this.updateValue, { init: false });
-        this.observe('realm', function (newValue)
-        {
-            if (realms.indexOf(newValue) < 0)
-            {
-                throw new TypeError('Invalid realm: ' + newValue);
-            }
+      this.set(keypath, value);
+    }
+  },
 
-            // Convert current value to new type
-            this.updateValue(this.get('value'), this.get('value'), 'value');
-        });
-    },
+  keydownAction: function (event) {
+    if (this.get("disabled") || this.get("readonly")) {
+      return;
+    }
 
-    updateValue: function (value, old, keypath)
-    {
-        if (value !== undefined && value !== null)
-        {
-            if (this.get('realm') === 'integer')
-            {
-                value = value | 0;
-            }
-            else
-            {
-                value = +value.toFixed(this.get('precision'));
-            }
+    event.stopPropagation();
 
-            this.set(keypath, value);
-        }
-    },
-
-    keydownAction: function (event)
-    {
-        if (this.get('disabled') || this.get('readonly'))
-        {
-            return;
-        }
-
-        event.stopPropagation();
-
-        if (event.keyCode === 13)
-        {
-            this.field.blur();
-        }
-    },
-
+    if (event.keyCode === 13) {
+      this.field.blur();
+    }
+  },
 });

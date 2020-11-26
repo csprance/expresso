@@ -1,120 +1,103 @@
-﻿
-import CoreField from '../core-field/core-field.js';
-import './core-checkbox.less';
+﻿import CoreField from "../core-field/core-field.js";
+import "./core-checkbox.less";
 
 export default CoreField.extend({
+  template: require("./core-checkbox.html"),
 
-    template: require('./core-checkbox.html'),
+  twoway: true,
 
-    twoway: true,
+  data: {
+    /**
+     * Field value.
+     * @type Boolean
+     * @default false
+     */
+    value: false,
 
-    data: {
+    /**
+     * If true, the element currently has focus due to keyboard
+     * navigation.
+     *
+     * @attribute focused
+     * @type boolean
+     * @default false
+     */
+    focused: false,
 
-        /**
-         * Field value.
-         * @type Boolean
-         * @default false
-         */
-        value: false,
+    /**
+     * If true, the user is currently holding down the button.
+     *
+     * @attribute pressed
+     * @type boolean
+     * @default false
+     */
+    pressed: false,
 
-        /**
-         * If true, the element currently has focus due to keyboard
-         * navigation.
-         *
-         * @attribute focused
-         * @type boolean
-         * @default false
-         */
-        focused: false,
+    /**
+     * Tabindex of this field.
+     * @type String
+     * @default null
+     */
+    tabindex: 0,
+  },
 
-        /**
-         * If true, the user is currently holding down the button.
-         *
-         * @attribute pressed
-         * @type boolean
-         * @default false
-         */
-        pressed: false,
-
-        /**
-         * Tabindex of this field.
-         * @type String
-         * @default null
-         */
-        tabindex: 0,
-
+  computed: {
+    icon: function () {
+      return this.get("value") ? "checkmark" : "";
     },
+  },
 
-    computed: {
+  focusAction: function () {
+    if (this.get("disabled")) {
+      return;
+    }
 
-        icon: function () { return this.get('value') ? 'checkmark' : ''; }
+    if (!this.get("pressed")) {
+      // Only render the "focused" state if the element gains focus due to
+      // keyboard navigation.
+      this.set("focused", true);
+    }
+  },
 
-    },
+  blurAction: function () {
+    if (this.get("disabled")) {
+      return;
+    }
 
-    focusAction: function ()
-    {
-        if (this.get('disabled'))
-        {
-            return;
-        }
+    this.set("focused", false);
+  },
 
-        if (!this.get('pressed'))
-        {
-            // Only render the "focused" state if the element gains focus due to
-            // keyboard navigation.
-            this.set('focused', true);
-        }
-    },
+  downAction: function () {
+    if (this.get("disabled")) {
+      return;
+    }
 
-    blurAction: function ()
-    {
-        if (this.get('disabled'))
-        {
-            return;
-        }
+    this.set("pressed", true);
+    this.set("focused", false);
+  },
 
-        this.set('focused', false);
-    },
+  clickAction: function (event) {
+    if (this.get("disabled")) {
+      return;
+    }
 
-    downAction: function ()
-    {
-        if (this.get('disabled'))
-        {
-            return;
-        }
+    // HACK: when core-checkbox is wrapped into a <label>
+    // we need to filter the location clicked by the user
+    // to avoid double toggling the checkbox
+    if (event.target !== this.field) {
+      // This is based on the fact that when a label is clicked,
+      // the event target is actually the checkbox input field
+      event.preventDefault();
+      this.toggle("value");
+      this.fire("toggle", this.get("value"));
+    }
+  },
 
-        this.set('pressed', true);
-        this.set('focused', false);
-    },
+  upAction: function () {
+    if (this.get("disabled")) {
+      return;
+    }
 
-    clickAction: function (event)
-    {
-        if (this.get('disabled'))
-        {
-            return;
-        }
-
-        // HACK: when core-checkbox is wrapped into a <label>
-        // we need to filter the location clicked by the user
-        // to avoid double toggling the checkbox
-        if (event.target !== this.field)
-        {
-            // This is based on the fact that when a label is clicked,
-            // the event target is actually the checkbox input field
-            event.preventDefault();
-            this.toggle('value');
-            this.fire('toggle', this.get('value'));
-        }
-    },
-
-    upAction: function ()
-    {
-        if (this.get('disabled'))
-        {
-            return;
-        }
-
-        this.set('pressed', false);
-    },
-
+    this.set("pressed", false);
+  },
 });
